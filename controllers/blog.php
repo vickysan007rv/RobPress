@@ -108,6 +108,31 @@ class Blog extends Controller {
 
 			//Get search results
 			$search = str_replace("*","%",$search); //Allow * as wildcard
+			$sansearch = htmlspecialchars($search, ENT_QUOTES,'UTF-8'); //addedfunction to sanitize search query, sansearch is the sanitized search variable
+			$ids = $this->db->connection->exec("SELECT id FROM `posts` WHERE `title` LIKE \"%$sansearch%\" OR `content` LIKE '%$sansearch%'");
+			$ids = Hash::extract($ids,'{n}.id');
+			if(empty($ids)) {
+				StatusMessage::add('No search results found for ' . $sansearch); 
+				return $f3->reroute('/blog/search');
+				
+			}
+
+			//Load associated data
+			$posts = $this->Model->Posts->fetchAll(array('id' => $ids));
+			$blogs = $this->Model->map($posts,'user_id','Users');
+			$blogs = $this->Model->map($posts,array('post_id','Post_Categories','category_id'),'Categories',false,$blogs);
+
+			$f3->set('blogs',$blogs);
+			$this->action = 'results';	
+		}
+		
+		/*public function search($f3) {
+		if($this->request->is('post')) {
+			extract($this->request->data);
+			$f3->set('search',$search);
+
+			//Get search results
+			$search = str_replace("*","%",$search); //Allow * as wildcard
 			$ids = $this->db->connection->exec("SELECT id FROM `posts` WHERE `title` LIKE \"%$search%\" OR `content` LIKE '%$search%'");
 			$ids = Hash::extract($ids,'{n}.id');
 			if(empty($ids)) {
@@ -122,7 +147,7 @@ class Blog extends Controller {
 
 			$f3->set('blogs',$blogs);
 			$this->action = 'results';	
-		}
+		} */
 	}
 }
 ?>
