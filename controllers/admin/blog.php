@@ -30,6 +30,7 @@
 			if($this->request->is('post')) {
 				$post = $this->Model->Posts;
 				extract($this->request->data);
+				$title = h($title); //sanitizing title
 				$post->title = $title;
 				$post->content = $content;
 				$post->summary = $summary;
