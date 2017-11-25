@@ -101,7 +101,7 @@ class Blog extends Controller {
 		$f3->reroute('/blog/view/' . $comment->blog_id);
 	}
 
-	public function search($f3) {
+	public function search($f3) { //trying
 		if($this->request->is('post')) {
 			extract($this->request->data);
 			$f3->set('search',$search);
