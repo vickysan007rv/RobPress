@@ -120,6 +120,7 @@ class Blog extends Controller {
 			$posts = $this->Model->Posts->fetchAll(array('id' => $ids));
 			$blogs = $this->Model->map($posts,'user_id','Users');
 			$blogs = $this->Model->map($posts,array('post_id','Post_Categories','category_id'),'Categories',false,$blogs);
+			
 
 			$f3->set('blogs',$blogs);
 			$this->action = 'results';	
